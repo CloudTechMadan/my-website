@@ -7,4 +7,18 @@
   <body>
     <p>If you are not redirected automatically, <a href="admin.html">click here</a>.</p>
   </body>
+  <script>
+  // Check if URL contains ?code=
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("code");
+
+  if (code) {
+    // You can store the code in localStorage or display a success message
+    console.log("Authorization code:", code);
+
+    // TODO: Exchange the code for tokens using a backend (optional)
+    document.body.innerHTML = "<h2>Login Successful! Authorization code: " + code + "</h2>";
+  }
+</script>
+
 </html>

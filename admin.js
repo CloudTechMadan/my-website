@@ -73,12 +73,12 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
   localStorage.removeItem('id_token');
   localStorage.removeItem('refresh_token');
 
-  const logoutRedirect =
-    `https://${cognitoDomain}/login?client_id=${clientId}&response_type=code&scope=email+openid+profile&redirect_uri=https://cloudtechmadan.github.io/my-website/index.html`;
+  const logoutRedirect = 'https://cloudtechmadan.github.io/my-website/index.html';  // ✅ Plain redirect URL only
 
   const logoutUrl =
     `https://${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutRedirect)}`;
 
   window.location.href = logoutUrl;
 });
+
 

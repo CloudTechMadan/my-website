@@ -68,13 +68,17 @@ document.getElementById("addUserForm").addEventListener("submit", async (e)=>{
 });
 
 /* ---------- Logout handler ---------- */
-document.getElementById('logoutBtn').addEventListener('click', ()=>{
+document.getElementById('logoutBtn').addEventListener('click', () => {
   localStorage.removeItem('access_token');
   localStorage.removeItem('id_token');
   localStorage.removeItem('refresh_token');
+
+  const logoutRedirect =
+    `https://${cognitoDomain}/login?client_id=${clientId}&response_type=code&scope=email+openid+profile&redirect_uri=https://cloudtechmadan.github.io/my-website/index.html`;
 
   const logoutUrl =
     `https://${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutRedirect)}`;
 
   window.location.href = logoutUrl;
 });
+

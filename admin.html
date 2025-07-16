@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin - Add Users</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Add New User to Attendance System</h1>
+    <form id="addUserForm">
+      <input type="text" id="employeeId" placeholder="Employee ID" required />
+      <input type="text" id="fullName" placeholder="Full Name" required />
+      <input type="file" id="faceImage" accept="image/*" required />
+      <button type="submit">➕ Add User</button>
+    </form>
+
+    <p id="adminStatus">Fill the form and upload a face image.</p>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

@@ -1,18 +1,23 @@
-const clientId = '5r9fdn5ja386taccaljn7qdlm7'; // Your App Client ID
+const clientId = '5r9fdn5ja386taccaljn7qdlm7'; // Your Cognito App Client ID
 const domain = 'face-attendance-admin-auth.auth.us-east-1.amazoncognito.com';
-const redirectUri = 'http://localhost:5500/admin.html'; // Change if hosted elsewhere
+const redirectUri = 'https://your-username.github.io/your-repo/'; // 👈 Replace with your actual GitHub Pages URL
 const tokenEndpoint = `https://${domain}/oauth2/token`;
 const addUserApi = 'https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/addUser';
 
 let idToken = null;
 
-// Step 1: Check if redirected back with ?code=
-(async function checkLogin() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const code = urlParams.get('code');
+// Step 1: Check if token already stored
+(async function () {
+  const savedToken = localStorage.getItem('idToken');
+  const code = sessionStorage.getItem('authCode');
+
+  if (savedToken) {
+    idToken = savedToken;
+    return;
+  }
 
   if (code) {
-    // Step 2: Exchange code for token
+    // Exchange code for token
     const body = new URLSearchParams({
       grant_type: 'authorization_code',
       client_id: clientId,
@@ -38,24 +43,20 @@ let idToken = null;
       }
 
       localStorage.setItem('idToken', idToken);
-      // Remove ?code= from URL
-      window.history.replaceState({}, document.title, redirectUri);
+      sessionStorage.removeItem('authCode'); // Clear code after use
 
     } catch (err) {
       document.getElementById('adminStatus').textContent = '❌ Error during login.';
+      console.error(err);
     }
   } else {
-    // No token in URL — check localStorage
-    idToken = localStorage.getItem('idToken');
-    if (!idToken) {
-      // Redirect to Cognito login
-      const loginUrl = `https://${domain}/login?client_id=${clientId}&response_type=code&scope=email+openid+profile&redirect_uri=${redirectUri}`;
-      window.location.href = loginUrl;
-    }
+    // Not logged in – redirect to Cognito
+    const loginUrl = `https://${domain}/login?client_id=${clientId}&response_type=code&scope=email+openid+profile&redirect_uri=${redirectUri}`;
+    window.location.href = loginUrl;
   }
 })();
 
-// Step 3: Handle form submission securely
+// Step 2: Submit form with token
 document.getElementById("addUserForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
@@ -109,5 +110,6 @@ document.getElementById("addUserForm").addEventListener("submit", async function
 // Logout function
 function logout() {
   localStorage.removeItem('idToken');
+  sessionStorage.clear();
   window.location.href = `https://${domain}/logout?client_id=${clientId}&logout_uri=${redirectUri}`;
 }

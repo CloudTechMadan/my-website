@@ -8,8 +8,9 @@ document.getElementById("addUserForm").addEventListener("submit", async function
 
   // Get token from localStorage
   const token = localStorage.getItem("access_token");
+
   if (!token) {
-    status.textContent = "❌ Not authenticated. Please login again.";
+    status.textContent = "❌ Not authenticated. Please log in again.";
     return;
   }
 
@@ -22,7 +23,7 @@ document.getElementById("addUserForm").addEventListener("submit", async function
   const reader = new FileReader();
 
   reader.onloadend = async () => {
-    const base64Data = reader.result.split(',')[1];
+    const base64Data = reader.result.split(',')[1]; // Remove the prefix
 
     const payload = {
       employeeId,
@@ -35,7 +36,7 @@ document.getElementById("addUserForm").addEventListener("submit", async function
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // ✅ Attach Cognito access token here
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(payload)
       });
@@ -46,6 +47,7 @@ document.getElementById("addUserForm").addEventListener("submit", async function
       } else {
         status.textContent = `❌ ${result.error || "Something went wrong."}`;
       }
+
     } catch (err) {
       console.error("Error:", err);
       status.textContent = "❌ Failed to connect to backend.";
@@ -53,11 +55,4 @@ document.getElementById("addUserForm").addEventListener("submit", async function
   };
 
   reader.readAsDataURL(file);
-});
-
-// Logout handler
-document.getElementById("logoutBtn")?.addEventListener("click", () => {
-  localStorage.removeItem("access_token");
-  localStorage.removeItem("id_token");
-  window.location.href = "https://face-attendance-admin-auth.auth.us-east-1.amazoncognito.com/logout?client_id=5r9fdn5ja386taccaljn7qdlm7&logout_uri=https://cloudtechmadan.github.io/my-website/index.html";
 });

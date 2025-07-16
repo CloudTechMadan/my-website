@@ -24,7 +24,7 @@ document.getElementById("addUserForm").addEventListener("submit", async function
     };
 
     try {
-      const token = await getIdToken(); // Make sure getIdToken() is defined and returns a token
+      const token = getAccessToken(); // Make sure getIdToken() is defined and returns a token
       const response = await fetch('https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/addUser', {
         method: 'POST',
         headers: {

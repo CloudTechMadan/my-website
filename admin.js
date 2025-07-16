@@ -24,26 +24,27 @@ document.getElementById("addUserForm").addEventListener("submit", async function
     };
 
     try {
-      const token = getIdToken(); // From auth.js
-      const response = await fetch('https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/addUser', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(payload)
-      });
+  const token = getIdToken(); // From auth.js
+  const response = await fetch('https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/addUser', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(payload)
+  });
 
-      const result = await response.json();
-      if (response.ok) {
-        status.textContent = `✅ ${result.message || "User added and indexed successfully."}`;
-      } else {
-        status.textContent = `❌ ${result.error || "Something went wrong."}`;
-      }
-    } catch (err) {
-      console.error("Error:", err);
-      status.textContent = "❌ Failed to connect to backend.";
-    }
+  const result = await response.json();
+  if (response.ok) {
+    status.textContent = `✅ ${result.message || "User added and indexed successfully."}`;
+  } else {
+    status.textContent = `❌ ${result.error || "Something went wrong."}`;
+  }
+} catch (err) {
+  console.error("Error:", err);
+  status.textContent = "❌ Failed to connect to backend.";
+}
+
   };
 
   reader.readAsDataURL(file);

@@ -11,11 +11,11 @@ document.getElementById("addUserForm").addEventListener("submit", async function
     return;
   }
 
-  // Read image as base64
   const file = fileInput.files[0];
   const reader = new FileReader();
+
   reader.onloadend = async () => {
-    const base64Data = reader.result.split(',')[1]; // Strip "data:image/jpeg;base64,"
+    const base64Data = reader.result.split(',')[1];
 
     const payload = {
       employeeId,
@@ -24,7 +24,7 @@ document.getElementById("addUserForm").addEventListener("submit", async function
     };
 
     try {
-      const token = getIdToken(); // From auth.js
+      const token = await getIdToken(); // Make sure getIdToken() is defined and returns a token
       const response = await fetch('https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/addUser', {
         method: 'POST',
         headers: {
@@ -33,18 +33,24 @@ document.getElementById("addUserForm").addEventListener("submit", async function
         },
         body: JSON.stringify(payload)
       });
+
       const result = await response.json();
+
       if (response.ok) {
         status.textContent = `✅ ${result.message || "User added and indexed successfully."}`;
-      } 
-      else {
+      } else {
         status.textContent = `❌ ${result.error || "Something went wrong."}`;
       }
-    } 
-    catch (err) {
+    } catch (err) {
       console.error("Error:", err);
       status.textContent = "❌ Failed to connect to backend.";
     }
   };
+
+  reader.onerror = () => {
+    console.error("File reading error");
+    status.textContent = "❌ Failed to read the image file.";
+  };
+
   reader.readAsDataURL(file);
 });

@@ -75,10 +75,9 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
 
   const logoutRedirect = 'https://cloudtechmadan.github.io/my-website/index.html';  // ✅ Plain redirect URL only
 
-  const logoutUrl =
-    `https://${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutRedirect)}`;
+  const logoutUrl = `https://${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent("https://cloudtechmadan.github.io/my-website/index.html")}`;
+window.location.href = logoutUrl;
 
-  window.location.href = logoutUrl;
 });
 
 

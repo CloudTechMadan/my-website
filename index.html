@@ -1,45 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Face Attendance System – Login</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div class="container">
-    <h1>Welcome to the Face Attendance System</h1>
-    <p>This system uses facial recognition to manage attendance securely and efficiently.</p>
-    
-    <!-- Optional fallback login button -->
-    <button id="loginBtn">🔒 Login as Admin</button>
-  </div>
-
-  <script>
-    // ==== CONFIG ====
-    const cognitoDomain = 'face-attendance-admin-auth.auth.us-east-1.amazoncognito.com';
-    const clientId      = '5r9fdn5ja386taccaljn7qdlm7';
-    const redirectUri   = 'https://cloudtechmadan.github.io/my-website/index.html';
-    const loginUrl      = `https://${cognitoDomain}/login?client_id=${clientId}&response_type=code&scope=email+openid+profile&redirect_uri=${encodeURIComponent(redirectUri)}`;
-    const adminPage     = 'admin.html';
-
-    // === Auto-redirect if already authenticated ===
-    if (localStorage.getItem("access_token")) {
-      window.location.href = adminPage;
-    }
-
-    // === Login button click ===
-    document.getElementById("loginBtn").addEventListener("click", () => {
-      window.location.href = loginUrl;
-    });
-
-    // === Auto-redirect to Cognito login if URL has no ?code ===
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get("code");
-    if (!code && !localStorage.getItem("access_token")) {
-      // Optional: uncomment to force auto-login
-      // window.location.href = loginUrl;
-    }
-  </script>
-</body>
+<html>
+  <head>
+    <meta http-equiv="refresh" content="0; url=https://face-attendance-admin-auth.auth.us-east-1.amazoncognito.com/login?client_id=5r9fdn5ja386taccaljn7qdlm7&response_type=code&scope=email+openid+profile&redirect_uri=https://cloudtechmadan.github.io/my-website/admin.html" />
+    <title>Redirecting...</title>
+  </head>
+  <body>
+    <p>If you are not redirected, <a href="https://face-attendance-admin-auth.auth.us-east-1.amazoncognito.com/login?client_id=5r9fdn5ja386taccaljn7qdlm7&response_type=code&scope=email+openid+profile&redirect_uri=https://cloudtechmadan.github.io/my-website/admin.html">click here to login</a>.</p>
+  </body>
 </html>

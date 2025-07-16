@@ -25,6 +25,8 @@ function storeTokens() {
 storeTokens();
 
 // Utility to get stored token
-function getIdToken() {
-  return localStorage.getItem("idToken");
+function getAccessToken() {
+  return localStorage.getItem("accessToken");
+}
+
 }

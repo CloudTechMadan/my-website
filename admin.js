@@ -7,7 +7,7 @@ document.getElementById("addUserForm").addEventListener("submit", async function
   const status = document.getElementById("adminStatus");
 
   if (!fileInput.files.length) {
-    status.textContent = "Please select an image file.";
+    status.textContent = "❌ Please select an image file.";
     return;
   }
 
@@ -15,16 +15,17 @@ document.getElementById("addUserForm").addEventListener("submit", async function
   const reader = new FileReader();
 
   reader.onloadend = async () => {
-    const base64Data = reader.result.split(',')[1];
+    const base64Data = reader.result.split(',')[1]; // Remove data:image/... part
 
     const payload = {
-      employeeId,
-      name,
+      employeeId: employeeId,
+      name: name,
       imageData: base64Data
     };
 
     try {
-      const token = getAccessToken(); // Make sure getIdToken() is defined and returns a token
+      const token = await getAccessToken(); // Ensure this is defined and returns a valid token
+
       const response = await fetch('https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/addUser', {
         method: 'POST',
         headers: {

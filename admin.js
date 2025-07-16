@@ -24,10 +24,12 @@ document.getElementById("addUserForm").addEventListener("submit", async function
     };
 
     try {
+      const token = getIdToken(); // From auth.js
       const response = await fetch('https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/addUser', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(payload)
       });

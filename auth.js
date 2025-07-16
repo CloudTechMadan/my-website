@@ -1,4 +1,5 @@
 // auth.js
+
 function getTokenFromUrl() {
   const hash = window.location.hash.substr(1); // Remove the #
   const params = new URLSearchParams(hash);
@@ -15,7 +16,7 @@ function storeTokens() {
     localStorage.setItem("idToken", tokens.idToken);
     localStorage.setItem("accessToken", tokens.accessToken);
     localStorage.setItem("refreshToken", tokens.refreshToken);
-    
+
     // Clean up URL
     window.history.replaceState({}, document.title, window.location.pathname);
   }
@@ -24,9 +25,7 @@ function storeTokens() {
 // Run this on every page load
 storeTokens();
 
-// Utility to get stored token
+// ✅ Utility to get stored access token
 function getAccessToken() {
   return localStorage.getItem("accessToken");
-}
-
 }

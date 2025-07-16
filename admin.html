@@ -3,21 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin - Add Users</title>
+  <title>Admin – Face Attendance</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
+    <!-- === NEW: user‑info banner === -->
+    <div id="userInfo" class="user‑banner">
+      <!-- Filled by admin.js -->
+    </div>
+
     <h1>Add New User to Attendance System</h1>
+
     <form id="addUserForm">
-      <input type="text" id="employeeId" placeholder="Employee ID" required />
-      <input type="text" id="fullName" placeholder="Full Name" required />
-      <input type="file" id="faceImage" accept="image/*" required />
-      <button type="submit">➕ Add User</button>
+      <input type="text" id="employeeId" placeholder="Employee ID" required />
+      <input type="text" id="fullName"   placeholder="Full Name"  required />
+      <input type="file" id="faceImage"  accept="image/*"         required />
+      <button type="submit">➕ Add User</button>
     </form>
 
     <p id="adminStatus">Fill the form and upload a face image.</p>
-    <button onclick="logout()">🚪 Logout</button>
+
+    <!-- === NEW: logout button === -->
+    <button id="logoutBtn">🚪 Logout</button>
   </div>
 
   <script src="admin.js"></script>

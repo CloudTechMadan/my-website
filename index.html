@@ -1,24 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="refresh" content="0; url=admin.html" />
-  <title>Redirecting to Admin...</title>
-</head>
-<body>
-  <p>If you're not redirected automatically, <a href="admin.html">click here</a>.</p>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Redirecting...</title>
+  </head>
+  <body>
+    <p>Redirecting...</p>
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("code");
 
-  <script>
-    // Preserve Cognito login code if present
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get("code");
+      if (code) {
+        const form = new URLSearchParams();
+        form.append("grant_type", "authorization_code");
+        form.append("client_id", "5r9fdn5ja386taccaljn7qdlm7");
+        form.append("code", code);
+        form.append("redirect_uri", "https://cloudtechmadan.github.io/my-website/index.html");
 
-    if (code) {
-      // Save code in sessionStorage so admin.html can process it
-      sessionStorage.setItem("authCode", code);
-      // Redirect to admin.html without query params
-      window.location.href = "admin.html";
-    }
-  </script>
-</body>
+        fetch("https://face-attendance-admin-auth.auth.us-east-1.amazoncognito.com/oauth2/token", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: form
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log("Token Response:", data);
+
+          if (data.access_token) {
+            // Store tokens for later use (optional)
+            localStorage.setItem("access_token", data.access_token);
+            localStorage.setItem("id_token", data.id_token);
+
+            // Redirect to admin.html
+            window.location.href = "admin.html";
+          } else {
+            document.body.innerHTML = `<h2>❌ Failed to retrieve token: ${data.error_description || "Unknown error"}</h2>`;
+          }
+        })
+        .catch(err => {
+          console.error("Token Error:", err);
+          document.body.innerHTML = `<h2>❌ Token request failed</h2>`;
+        });
+      } else {
+        // No code in URL
+        window.location.href = "admin.html"; // fallback
+      }
+    </script>
+  </body>
 </html>

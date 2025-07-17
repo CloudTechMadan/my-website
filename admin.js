@@ -5,8 +5,6 @@ document.getElementById("addUserForm").addEventListener("submit", async function
   const name = document.getElementById("fullName").value.trim();
   const fileInput = document.getElementById("faceImage");
   const status = document.getElementById("adminStatus");
-
-  // Get token from localStorage
   const token = localStorage.getItem("access_token");
 
   if (!token) {
@@ -23,7 +21,7 @@ document.getElementById("addUserForm").addEventListener("submit", async function
   const reader = new FileReader();
 
   reader.onloadend = async () => {
-    const base64Data = reader.result.split(',')[1]; // Remove the prefix
+    const base64Data = reader.result.split(',')[1];
 
     const payload = {
       employeeId,
@@ -42,12 +40,9 @@ document.getElementById("addUserForm").addEventListener("submit", async function
       });
 
       const result = await response.json();
-      if (response.ok) {
-        status.textContent = `✅ ${result.message || "User added and indexed successfully."}`;
-      } else {
-        status.textContent = `❌ ${result.error || "Something went wrong."}`;
-      }
-
+      status.textContent = response.ok
+        ? `✅ ${result.message || "User added successfully."}`
+        : `❌ ${result.error || "Something went wrong."}`;
     } catch (err) {
       console.error("Error:", err);
       status.textContent = "❌ Failed to connect to backend.";

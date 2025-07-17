@@ -58,3 +58,9 @@ button:hover {
   font-size: 14px;
   color: #333;
 }
+
+#userInfo {
+  margin-top: 10px;
+  font-size: 14px;
+  color: green;
+}

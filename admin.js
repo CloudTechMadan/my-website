@@ -3,7 +3,7 @@ function isTokenExpired(token) {
   try {
     const [, payloadBase64] = token.split(".");
     const payload = JSON.parse(atob(payloadBase64));
-    const exp = payload.exp * 1000; // to milliseconds
+    const exp = payload.exp * 1000;
     return Date.now() > exp;
   } catch {
     return true;
@@ -15,7 +15,8 @@ const idToken = localStorage.getItem("id_token");
 
 if (!accessToken || isTokenExpired(accessToken)) {
   localStorage.clear();
-  window.location.href = "https://face-attendance-admin-auth.auth.us-east-1.amazoncognito.com/login?client_id=5r9fdn5ja386taccaljn7qdlm7&response_type=code&scope=email+openid&redirect_uri=https://cloudtechmadan.github.io/my-website/index.html";
+  window.location.href =
+    "https://face-attendance-admin-auth.auth.us-east-1.amazoncognito.com/login?client_id=5r9fdn5ja386taccaljn7qdlm7&response_type=code&scope=email+openid&redirect_uri=https://cloudtechmadan.github.io/my-website/index.html";
 }
 
 // === Display Logged-in User Info ===
@@ -47,17 +48,29 @@ document.getElementById("addUserForm").addEventListener("submit", async function
   }
 
   const file = fileInput.files[0];
+
+  if (file.size > 2 * 1024 * 1024) {
+    status.textContent = "❌ Image too large. Max 2MB.";
+    return;
+  }
+
   const reader = new FileReader();
 
   reader.onload = async function () {
+    if (!reader.result.includes(',')) {
+      status.textContent = "❌ Failed to read image.";
+      return;
+    }
+
     const base64Image = reader.result.split(',')[1];
 
     try {
+      status.textContent = "⏳ Uploading...";
       const response = await fetch("https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/addUser", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: accessToken
+          Authorization: `Bearer ${accessToken}`
         },
         body: JSON.stringify({
           employeeId,
@@ -85,5 +98,6 @@ document.getElementById("addUserForm").addEventListener("submit", async function
 // === Logout Handler ===
 document.getElementById("logoutBtn").addEventListener("click", () => {
   localStorage.clear();
-  window.location.href = "https://face-attendance-admin-auth.auth.us-east-1.amazoncognito.com/logout?client_id=5r9fdn5ja386taccaljn7qdlm7&logout_uri=https://cloudtechmadan.github.io/my-website/index.html";
+  window.location.href =
+    "https://face-attendance-admin-auth.auth.us-east-1.amazoncognito.com/logout?client_id=5r9fdn5ja386taccaljn7qdlm7&logout_uri=https://cloudtechmadan.github.io/my-website/index.html";
 });

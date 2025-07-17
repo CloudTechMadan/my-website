@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <title>Admin Panel - Add User</title>
   <link rel="stylesheet" href="style.css" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
 </head>
 <body>
   <div class="container">
@@ -24,11 +27,5 @@
   </div>
 
   <script src="admin.js"></script>
-  <script>
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-      localStorage.clear();
-      window.location.href = "https://face-attendance-admin-auth.auth.us-east-1.amazoncognito.com/logout?client_id=5r9fdn5ja386taccaljn7qdlm7&logout_uri=https://cloudtechmadan.github.io/my-website/index.html";
-    });
-  </script>
 </body>
 </html>

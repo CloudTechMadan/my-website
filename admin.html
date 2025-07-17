@@ -16,10 +16,20 @@
       <input type="file" id="faceImage" accept="image/*" required /><br><br>
       <button type="submit">Add User</button>
     </form>
+    <!-- Logout Button -->
+    <button id="logoutBtn">🚪 Logout</button>
+
 
     <div id="adminStatus"></div>
   </div>
 
   <script src="admin.js"></script>
+  <script>
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.clear(); // Clears tokens
+    window.location.href = "https://face-attendance-admin-auth.auth.us-east-1.amazoncognito.com/logout?client_id=5r9fdn5ja386taccaljn7qdlm7&logout_uri=https://cloudtechmadan.github.io/my-website/index.html";
+  });
+  </script>
+
 </body>
 </html>

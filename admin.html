@@ -1,33 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin – Face Attendance</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div class="container">
-    <!-- === NEW: user‑info banner === -->
-    <div id="userInfo" class="user‑banner">
-      <!-- Filled by admin.js -->
-    </div>
+<html>
+  <head>
+    <meta http-equiv="refresh" content="0; url=admin.html" />
+    <title>Redirecting...</title>
+  </head>
+  <body>
+    <p>If you're not redirected automatically, <a href="admin.html">click here</a>.</p>
+  </body>
 
-    <h1>Add New User to Attendance System</h1>
+  <script>
+    // If redirected from Cognito with code
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
 
-    <form id="addUserForm">
-      <input type="text" id="employeeId" placeholder="Employee ID" required />
-      <input type="text" id="fullName"   placeholder="Full Name"  required />
-      <input type="file" id="faceImage"  accept="image/*"         required />
-      <button type="submit">➕ Add User</button>
-    </form>
+    if (code) {
+      const form = new URLSearchParams();
+      form.append("grant_type", "authorization_code");
+      form.append("client_id", "5r9fdn5ja386taccaljn7qdlm7");
+      form.append("code", code);
+      form.append("redirect_uri", "https://cloudtechmadan.github.io/my-website/index.html");
 
-    <p id="adminStatus">Fill the form and upload a face image.</p>
+      fetch("https://face-attendance-admin-auth.auth.us-east-1.amazoncognito.com/oauth2/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: form
+      })
+      .then(res => res.json())
+      .then(data => {
+        // Save tokens to localStorage
+        localStorage.setItem("access_token", data.access_token);
+        localStorage.setItem("id_token", data.id_token);
+        localStorage.setItem("refresh_token", data.refresh_token);
 
-    <!-- === NEW: logout button === -->
-    <button id="logoutBtn">🚪 Logout</button>
-  </div>
-
-  <script src="admin.js"></script>
-</body>
+        // Redirect to admin page
+        window.location.href = "admin.html";
+      })
+      .catch(err => {
+        document.body.innerHTML = "<h3>❌ Failed to log in.</h3>";
+        console.error(err);
+      });
+    }
+  </script>
 </html>

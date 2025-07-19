@@ -1,26 +1,25 @@
-// === Check if token is expired ===
+// === Auth Check and Redirection ===
 function isTokenExpired(token) {
   try {
     const [, payloadBase64] = token.split(".");
     const payload = JSON.parse(atob(payloadBase64));
-    return Date.now() > payload.exp * 1000;
+    const exp = payload.exp * 1000;
+    return Date.now() > exp;
   } catch {
     return true;
   }
 }
 
-// === Get tokens ===
 const accessToken = localStorage.getItem("access_token");
 const idToken = localStorage.getItem("id_token");
 
-// === Redirect to login if invalid ===
 if (!accessToken || isTokenExpired(accessToken)) {
   localStorage.clear();
   window.location.href =
     "https://face-attendance-admin-auth.auth.us-east-1.amazoncognito.com/login?client_id=5r9fdn5ja386taccaljn7qdlm7&response_type=code&scope=email+openid&redirect_uri=https://cloudtechmadan.github.io/my-website/index.html";
 }
 
-// === Show logged-in user ===
+// === Display Logged-in User Info ===
 function showUserInfo(token) {
   try {
     const [, payloadBase64] = token.split(".");
@@ -31,10 +30,11 @@ function showUserInfo(token) {
     document.getElementById("userInfo").textContent = "Logged in";
   }
 }
+
 showUserInfo(idToken);
 
-// === Handle form submission ===
-document.getElementById("addUserForm").addEventListener("submit", async (e) => {
+// === Handle Add User Form Submission ===
+document.getElementById("addUserForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
   const employeeId = document.getElementById("employeeId").value.trim();
@@ -48,18 +48,21 @@ document.getElementById("addUserForm").addEventListener("submit", async (e) => {
   }
 
   const file = fileInput.files[0];
+
   if (file.size > 2 * 1024 * 1024) {
     status.textContent = "❌ Image too large. Max 2MB.";
     return;
   }
 
   const reader = new FileReader();
-  reader.onload = async () => {
-    const base64Image = reader.result.split(',')[1];
-    if (!base64Image) {
+
+  reader.onload = async function () {
+    if (!reader.result.includes(',')) {
       status.textContent = "❌ Failed to read image.";
       return;
     }
+
+    const base64Image = reader.result.split(',')[1];
 
     try {
       status.textContent = "⏳ Uploading...";
@@ -67,9 +70,13 @@ document.getElementById("addUserForm").addEventListener("submit", async (e) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessToken}`
         },
-        body: JSON.stringify({ employeeId, name, image: base64Image }),
+        body: JSON.stringify({
+          employeeId,
+          name,
+          image: base64Image
+        })
       });
 
       const result = await response.json();
@@ -77,7 +84,7 @@ document.getElementById("addUserForm").addEventListener("submit", async (e) => {
         status.textContent = "✅ User added successfully!";
         document.getElementById("addUserForm").reset();
       } else {
-        status.textContent = `❌ ${result.message || result.error || "API Error"}`;
+        status.textContent = `❌ Error: ${result.message || "Something went wrong"}`;
       }
     } catch (err) {
       console.error("Add user error:", err);
@@ -88,7 +95,7 @@ document.getElementById("addUserForm").addEventListener("submit", async (e) => {
   reader.readAsDataURL(file);
 });
 
-// === Logout ===
+// === Logout Handler ===
 document.getElementById("logoutBtn").addEventListener("click", () => {
   localStorage.clear();
   window.location.href =

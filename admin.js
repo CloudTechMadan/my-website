@@ -77,7 +77,7 @@ document.getElementById("addUserForm").addEventListener("submit", async (e) => {
         status.textContent = "✅ User added successfully!";
         document.getElementById("addUserForm").reset();
       } else {
-        status.textContent = `❌ ${result.message || "API Error"}`;
+        status.textContent = `❌ ${result.message || result.error || "API Error"}`;
       }
     } catch (err) {
       console.error("Add user error:", err);

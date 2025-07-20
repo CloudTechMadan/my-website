@@ -39,6 +39,7 @@ document.getElementById("addUserForm").addEventListener("submit", async function
 
   const employeeId = document.getElementById("employeeId").value.trim();
   const name = document.getElementById("fullName").value.trim();
+  const email = document.getElementById("email").value.trim();
   const fileInput = document.getElementById("faceImage");
   const status = document.getElementById("adminStatus");
 

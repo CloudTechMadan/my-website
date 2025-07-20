@@ -1,4 +1,3 @@
-// === Auth Check and Redirection ===
 function isTokenExpired(token) {
   try {
     const [, payloadBase64] = token.split(".");
@@ -19,7 +18,6 @@ if (!accessToken || isTokenExpired(accessToken)) {
     "https://face-attendance-admin-auth.auth.us-east-1.amazoncognito.com/login?client_id=64pn554o9iae8at36o356j1ba1&response_type=token&scope=openid+email+profile+admin-api/admin-access&redirect_uri=https://cloudtechmadan.github.io/my-website/index.html";
 }
 
-// === Display Logged-in User Info ===
 function showUserInfo(token) {
   try {
     const [, payloadBase64] = token.split(".");
@@ -33,13 +31,11 @@ function showUserInfo(token) {
 
 showUserInfo(idToken);
 
-// === Handle Add User Form Submission ===
 document.getElementById("addUserForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
   const employeeId = document.getElementById("employeeId").value.trim();
   const name = document.getElementById("fullName").value.trim();
-  const email = document.getElementById("email").value.trim();
   const fileInput = document.getElementById("faceImage");
   const status = document.getElementById("adminStatus");
 
@@ -67,7 +63,7 @@ document.getElementById("addUserForm").addEventListener("submit", async function
 
     try {
       status.textContent = "⏳ Uploading...";
-      const response = await fetch("https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/prod/addUser", {
+      const response = await fetch("https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/addUser", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -76,7 +72,6 @@ document.getElementById("addUserForm").addEventListener("submit", async function
         body: JSON.stringify({
           employeeId,
           name,
-          email,
           image: base64Image
         })
       });
@@ -97,7 +92,6 @@ document.getElementById("addUserForm").addEventListener("submit", async function
   reader.readAsDataURL(file);
 });
 
-// === Logout Handler ===
 document.getElementById("logoutBtn").addEventListener("click", () => {
   localStorage.clear();
   window.location.href =

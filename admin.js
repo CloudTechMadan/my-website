@@ -16,7 +16,7 @@ const idToken = localStorage.getItem("id_token");
 if (!accessToken || isTokenExpired(accessToken)) {
   localStorage.clear();
   window.location.href =
-    "https://face-attendance-admin-auth.auth.us-east-1.amazoncognito.com/login?client_id=64pn554o9iae8at36o356j1ba1&response_type=code&scope=openid+email+profile+admin-api/admin-access&redirect_uri=https://cloudtechmadan.github.io/my-website/index.html";
+    "https://face-attendance-admin-auth.auth.us-east-1.amazoncognito.com/login?client_id=64pn554o9iae8at36o356j1ba1&response_type=token&scope=openid+email+profile+admin-api/admin-access&redirect_uri=https://cloudtechmadan.github.io/my-website/index.html";
 }
 
 // === Display Logged-in User Info ===

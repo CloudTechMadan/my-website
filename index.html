@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Redirecting...</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
@@ -10,40 +10,18 @@
   <body>
     <p>Redirecting...</p>
     <script>
-      const params = new URLSearchParams(window.location.search);
-      const code = params.get("code");
+      const hashParams = new URLSearchParams(window.location.hash.substr(1));
+      const accessToken = hashParams.get("access_token");
+      const idToken = hashParams.get("id_token");
 
-      if (code) {
-        const form = new URLSearchParams();
-        form.append("grant_type", "authorization_code");
-        form.append("client_id", "64pn554o9iae8at36o356j1ba1"); // ✅ new admin-client
-        form.append("code", code);
-        form.append("redirect_uri", "https://cloudtechmadan.github.io/my-website/index.html");
-
-        fetch("https://face-attendance-admin-auth.auth.us-east-1.amazoncognito.com/oauth2/token", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
-          body: form
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.access_token) {
-            localStorage.setItem("access_token", data.access_token);
-            localStorage.setItem("id_token", data.id_token);
-            localStorage.setItem("refresh_token", data.refresh_token);
-            window.location.href = "admin.html";
-          } else {
-            document.body.innerHTML = `<h2>❌ Failed to retrieve token: ${data.error_description || "Unknown error"}</h2>`;
-          }
-        })
-        .catch(err => {
-          console.error("Token Error:", err);
-          document.body.innerHTML = `<h2>❌ Token request failed</h2>`;
-        });
-      } else {
+      if (accessToken && idToken) {
+        localStorage.setItem("access_token", accessToken);
+        localStorage.setItem("id_token", idToken);
         window.location.href = "admin.html";
+      } else {
+        // No token, redirect to login
+        window.location.href =
+          "https://face-attendance-admin-auth.auth.us-east-1.amazoncognito.com/login?client_id=64pn554o9iae8at36o356j1ba1&response_type=token&scope=openid+email+profile+admin-api/admin-access&redirect_uri=https://cloudtechmadan.github.io/my-website/index.html";
       }
     </script>
   </body>

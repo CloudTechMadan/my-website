@@ -76,6 +76,7 @@ document.getElementById("addUserForm").addEventListener("submit", async function
         body: JSON.stringify({
           employeeId,
           name,
+          email,
           image: base64Image
         })
       });

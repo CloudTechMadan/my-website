@@ -81,7 +81,7 @@ document.getElementById("addUserForm").addEventListener("submit", async function
         status.textContent = "✅ User added successfully!";
         document.getElementById("addUserForm").reset();
       } else {
-        status.textContent = `❌ Error: ${result.message || "Something went wrong"}`;
+        status.textContent = `❌ Error: ${result.error || result.message || "Something went wrong"}`;
       }
     } catch (err) {
       console.error("Add user error:", err);

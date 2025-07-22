@@ -181,3 +181,46 @@ function attachEditButtons() {
   });
 }
 
+function attachDeleteButtons() {
+  const deleteButtons = document.querySelectorAll('.delete-btn');
+
+  deleteButtons.forEach(button => {
+    button.addEventListener('click', async () => {
+      const employeeId = button.dataset.id;
+
+      const userInput = prompt(`To confirm deletion, type the Employee ID: "${employeeId}"`);
+
+      if (userInput !== employeeId) {
+        alert("❌ Employee ID did not match. Deletion cancelled.");
+        return;
+      }
+
+      try {
+        const token = sessionStorage.getItem("accessToken"); // Or wherever you're storing it
+
+        const response = await fetch('https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/deleteEmployeeAdmin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+          },
+          body: JSON.stringify({ employeeId })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          alert(`✅ ${result.message}`);
+          button.closest('tr').remove(); // Remove row from table
+        } else {
+          alert(`❌ ${result.error || 'Delete failed'}`);
+        }
+      } catch (err) {
+        console.error("Delete error:", err);
+        alert("❌ Failed to delete employee.");
+      }
+    });
+  });
+}
+
+

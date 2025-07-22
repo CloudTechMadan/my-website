@@ -142,14 +142,30 @@ async function loadEmployees() {
 
 loadEmployees(); // Load on page load
 
-document.getElementById("searchBox").addEventListener("input", function () {
+document.getElementById("searchBox").addEventListener("input", async function () {
   const filter = this.value.toLowerCase();
   const rows = document.querySelectorAll("#employeeTable tbody tr");
+  let foundMatch = false;
+  let matchedId = "";
+
   rows.forEach(row => {
     const text = row.textContent.toLowerCase();
-    row.style.display = text.includes(filter) ? "" : "none";
+    const isMatch = text.includes(filter);
+    row.style.display = isMatch ? "" : "none";
+    if (isMatch && !foundMatch) {
+      matchedId = row.children[0].textContent; // First column is Employee ID
+      foundMatch = true;
+    }
   });
+
+  if (foundMatch) {
+    loadEmployeeLogs(matchedId);
+  } else {
+    document.getElementById("logsHeader").style.display = "none";
+    document.getElementById("logsContainer").style.display = "none";
+  }
 });
+
 
 function attachEditButtons() {
   const buttons = document.querySelectorAll(".editBtn");

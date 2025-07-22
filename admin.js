@@ -208,8 +208,10 @@ function attachDeleteButtons() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`
           },
-          body: JSON.stringify({ employeeId })
-          confirmId: userInput
+          body: JSON.stringify({
+            employeeId: employeeId,
+            confirmId: userInput // 🔐 Match confirmation
+            })
         });
 
         const result = await response.json();

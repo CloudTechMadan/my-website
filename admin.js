@@ -138,6 +138,15 @@ async function loadEmployees() {
 
 loadEmployees(); // Load on page load
 
+document.getElementById("searchBox").addEventListener("input", function () {
+  const filter = this.value.toLowerCase();
+  const rows = document.querySelectorAll("#employeeTable tbody tr");
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    row.style.display = text.includes(filter) ? "" : "none";
+  });
+});
+
 function attachEditButtons() {
   const buttons = document.querySelectorAll(".editBtn");
   buttons.forEach(btn => {
@@ -148,7 +157,7 @@ function attachEditButtons() {
       if (!newName || newName.trim() === "") return;
 
       try {
-        const res = await fetch("https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/getEmployeeDetailsAdmin", {
+        const res = await fetch("https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/updateEmployeeNameAdmin", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

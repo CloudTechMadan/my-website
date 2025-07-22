@@ -210,11 +210,11 @@ document.querySelector('button[onclick="searchEmployee()"]').addEventListener("c
   });
 
   if (found) {
-    loadLogs(matchedId);
-  } else {
-    document.getElementById("logsHeader").style.display = "none";
-    document.getElementById("logsContainer").style.display = "none";
-  }
+  loadEmployees(matchedId); // ✅ Will fetch both employee and logs data
+} else {
+  document.getElementById("logsHeader").style.display = "none";
+  document.getElementById("logsContainer").style.display = "none";
+}
 });
 
 document.querySelector('button[onclick="clearSearch()"]').addEventListener("click", function () {

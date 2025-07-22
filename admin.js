@@ -182,7 +182,7 @@ const searchInput = document.getElementById("searchInput");
 const suggestionsBox = document.getElementById("searchSuggestions");
 
 // Real-time input listener
-searchInput.addEventListener("input", () => {
+searchInput.addEventListener("input", async () => {
   const query = searchInput.value.trim().toLowerCase();
   if (!query) {
     suggestionsBox.style.display = "none";
@@ -190,52 +190,48 @@ searchInput.addEventListener("input", () => {
     return;
   }
 
-  const rows = document.querySelectorAll("#employeeTable tbody tr");
-  suggestionsBox.innerHTML = "";
-  let matches = [];
-
-  rows.forEach(row => {
-    const empId = row.children[0].textContent.toLowerCase();
-    const name = row.children[1].textContent.toLowerCase();
-    if (empId.includes(query) || name.includes(query)) {
-      matches.push({ id: empId, name: row.children[1].textContent });
-    }
-  });
-
-  if (matches.length > 0) {
-    suggestionsBox.style.display = "block";
-    matches.forEach(match => {
-      const li = document.createElement("li");
-      li.textContent = `${match.name} (${match.id})`;
-      li.style.padding = "6px";
-      li.style.cursor = "pointer";
-      li.style.borderBottom = "1px solid #eee";
-
-      li.addEventListener("click", async () => {
-        searchInput.value = match.name;
-        suggestionsBox.style.display = "none";
-        await loadEmployees(match.id);  // Wait for fresh data
-        filterEmployeeTableById(match.id);  // Then filter table
-      });
-
-      suggestionsBox.appendChild(li);
+  try {
+    const response = await fetch("https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/getEmployeeDetailsAdmin", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`
+      }
     });
-  } else {
-    suggestionsBox.style.display = "none";
+    const data = await response.json();
+
+    const matches = data.employees.filter(emp => {
+      return emp.EmployeeID.toLowerCase().includes(query) ||
+             emp.Name.toLowerCase().includes(query);
+    });
+
+    suggestionsBox.innerHTML = "";
+
+    if (matches.length > 0) {
+      suggestionsBox.style.display = "block";
+      matches.forEach(match => {
+        const li = document.createElement("li");
+        li.textContent = `${match.Name} (${match.EmployeeID})`;
+        li.style.padding = "6px";
+        li.style.cursor = "pointer";
+        li.style.borderBottom = "1px solid #eee";
+
+        li.addEventListener("click", async () => {
+          searchInput.value = match.Name;
+          suggestionsBox.style.display = "none";
+          await loadEmployees(match.EmployeeID); // ✅ Only this line needed
+        });
+
+        suggestionsBox.appendChild(li);
+      });
+    } else {
+      suggestionsBox.style.display = "none";
+    }
+  } catch (err) {
+    console.error("Suggestion error:", err);
   }
 });
 
-function filterEmployeeTableById(empId) {
-  const rows = document.querySelectorAll("#employeeTable tbody tr");
-  rows.forEach(row => {
-    if (row.children[0].textContent === empId) {
-      row.style.display = "";
-    } else {
-      row.style.display = "none";
-    }
-  });
-}
-
+//...
 function resetTableAndLogs() {
   const rows = document.querySelectorAll("#employeeTable tbody tr");
   rows.forEach(row => row.style.display = "");

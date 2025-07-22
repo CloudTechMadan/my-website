@@ -117,3 +117,9 @@ td button {
   font-size: 14px;
   color: green;
 }
+#topAttendanceStats {
+  padding-left: 20px;
+  margin-top: 10px;
+  line-height: 1.6;
+}
+

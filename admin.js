@@ -97,11 +97,21 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
   window.location.href =
     "https://face-attendance-admin-auth.auth.us-east-1.amazoncognito.com/logout?client_id=64pn554o9iae8at36o356j1ba1&logout_uri=https://cloudtechmadan.github.io/my-website/index.html";
 });
-async function loadEmployees() {
+
+//Loading Logs with details
+async function loadEmployees(filterId = null) {
   const status = document.getElementById("adminStatus");
+  const logsContainer = document.getElementById("logsContainer");
+  const logsHeader = document.getElementById("logsHeader");
+  const logsTableBody = document.querySelector("#logsTable tbody");
 
   try {
-    const response = await fetch("https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/getEmployeeDetailsAdmin", {
+    // If filterId is passed, request with query param to also get logs
+    const url = filterId
+      ? `https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/getEmployeeDetailsAdmin?employeeId=${encodeURIComponent(filterId)}`
+      : `https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/getEmployeeDetailsAdmin`;
+
+    const response = await fetch(url, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`
@@ -115,9 +125,9 @@ async function loadEmployees() {
       return;
     }
 
+    // 🧑‍💼 Render employee table
     const tableBody = document.querySelector("#employeeTable tbody");
-    tableBody.innerHTML = ""; // Clear previous
-
+    tableBody.innerHTML = "";
     data.employees.forEach(emp => {
       const row = document.createElement("tr");
       row.innerHTML = `
@@ -126,23 +136,48 @@ async function loadEmployees() {
         <td>${emp.FaceId || '—'}</td>
         <td>${emp.CreatedAt || '—'}</td>
         <td>
-        <button class="editBtn" data-id="${emp.EmployeeID}" data-name="${emp.Name}">✏️ Edit</button>
-        <button class="delete-btn" data-id="${emp.EmployeeID}" style="margin-left: 5px;">🗑️ Delete</button>
+          <button class="editBtn" data-id="${emp.EmployeeID}" data-name="${emp.Name}">✏️ Edit</button>
+          <button class="delete-btn" data-id="${emp.EmployeeID}" style="margin-left: 5px;">🗑️ Delete</button>
         </td>
-        `;
+      `;
       tableBody.appendChild(row);
     });
+
     attachEditButtons();
     attachDeleteButtons();
+
+    // 📜 If logs are returned, show them
+    if (data.logs && data.logs.length > 0) {
+      logsHeader.style.display = "block";
+      logsContainer.style.display = "block";
+      logsTableBody.innerHTML = "";
+
+      data.logs.forEach(log => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${log.TimestampIST || "—"}</td>
+          <td>${log.Timestamp || "—"}</td>
+          <td>${log.Address || "—"}</td>
+          <td>${log.Pincode || "—"}</td>
+        `;
+        logsTableBody.appendChild(row);
+      });
+    } else {
+      logsHeader.style.display = "none";
+      logsContainer.style.display = "none";
+      logsTableBody.innerHTML = "";
+    }
+
   } catch (err) {
     console.error("Load employees error:", err);
     status.textContent = "❌ Unable to fetch employees.";
   }
 }
 
+
 loadEmployees(); // Load on page load
 
-document.getElementById("searchBox").addEventListener("input", async function () {
+document.getElementById("searchBox").addEventListener("input", function () {
   const filter = this.value.toLowerCase();
   const rows = document.querySelectorAll("#employeeTable tbody tr");
   let foundMatch = false;
@@ -159,7 +194,7 @@ document.getElementById("searchBox").addEventListener("input", async function ()
   });
 
   if (foundMatch) {
-    loadEmployeeLogs(matchedId);
+    loadEmployees(matchedId); // reload with logs
   } else {
     document.getElementById("logsHeader").style.display = "none";
     document.getElementById("logsContainer").style.display = "none";

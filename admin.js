@@ -205,10 +205,11 @@ function attachDeleteButtons() {
         const response = await fetch('https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/deleteEmployeeAdmin', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': token
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`
           },
           body: JSON.stringify({ employeeId })
+          confirmId: userInput
         });
 
         const result = await response.json();

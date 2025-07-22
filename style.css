@@ -4,9 +4,10 @@ body {
   margin: 0;
   padding: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
+  padding-top: 40px;
 }
 
 .container {
@@ -14,28 +15,45 @@ body {
   border-radius: 12px;
   padding: 30px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  width: 400px;
+  width: 100%;
+  max-width: 800px;
+  box-sizing: border-box;
 }
 
 h1 {
   color: #2e7dd1;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
+  text-align: center;
 }
 
 .description {
   font-size: 14px;
   color: #555;
   margin-bottom: 20px;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
 input[type="text"],
-input[type="file"] {
-  width: 90%;
+input[type="file"],
+#searchBox {
+  width: 100%;
+  max-width: 400px;
   padding: 10px;
-  margin-bottom: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
+  box-sizing: border-box;
+}
+
+#searchBox {
+  margin: 15px 0;
 }
 
 button {
@@ -54,13 +72,48 @@ button:hover {
 }
 
 #adminStatus {
-  margin-top: 15px;
+  margin-top: 10px;
   font-size: 14px;
-  color: #333;
+  color: #d9534f;
+  text-align: center;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+th,
+td {
+  border: 1px solid #ccc;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+th {
+  background-color: #e6f0fa;
+}
+
+td button {
+  font-size: 14px;
+  padding: 6px 10px;
+}
+
+.footer {
+  margin-top: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 #userInfo {
-  margin-top: 10px;
   font-size: 14px;
   color: green;
 }

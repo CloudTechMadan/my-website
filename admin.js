@@ -125,8 +125,11 @@ async function loadEmployees() {
         <td>${emp.Name}</td>
         <td>${emp.FaceId || '—'}</td>
         <td>${emp.CreatedAt || '—'}</td>
-        <td><button class="editBtn" data-id="${emp.EmployeeID}" data-name="${emp.Name}">✏️ Edit</button></td>
-      `;
+        <td>
+        <button class="editBtn" data-id="${emp.EmployeeID}" data-name="${emp.Name}">✏️ Edit</button>
+        <button class="delete-btn" data-id="${emp.EmployeeID}" style="margin-left: 5px;">🗑️ Delete</button>
+        </td>
+        `;
       tableBody.appendChild(row);
     });
     attachEditButtons();

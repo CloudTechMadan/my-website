@@ -177,52 +177,62 @@ async function loadEmployees(filterId = null) {
 
 loadEmployees(); // Load on page load
 
-//search logic
-document.getElementById("searchBox").addEventListener("input", function () {
-  const filter = this.value.trim().toLowerCase();
+// Enhanced Search and Clear Logic
+document.querySelector('button[onclick="searchEmployee()"]').addEventListener("click", function () {
+  const filter = document.getElementById("searchInput").value.toLowerCase().trim();
   const rows = document.querySelectorAll("#employeeTable tbody tr");
 
-  let foundIdMatch = null;
+  let found = false;
+  let matchedId = "";
 
   rows.forEach(row => {
-    const idCell = row.children[0].textContent.toLowerCase();
-    const nameCell = row.children[1].textContent.toLowerCase();
-    const isMatch = idCell.includes(filter) || nameCell.includes(filter);
+    const employeeId = row.children[0].textContent.toLowerCase();
+    const name = row.children[1].textContent.toLowerCase();
+    const isMatch = employeeId.includes(filter) || name.includes(filter);
 
-    // Highlight matched name/ID (case-insensitive)
-    for (let i = 0; i < 2; i++) {
-      const cell = row.children[i];
-      const original = cell.textContent;
-      const regex = new RegExp(`(${filter})`, "ig");
-      cell.innerHTML = original.replace(regex, "<mark>$1</mark>");
+    if (isMatch && !found) {
+      matchedId = row.children[0].textContent;
+      found = true;
     }
 
     row.style.display = isMatch ? "" : "none";
 
-    if (isMatch && !foundIdMatch) {
-      foundIdMatch = idCell; // store EmployeeID for logs
-    }
+    // Highlight matched text
+    Array.from(row.children).forEach(cell => {
+      const original = cell.textContent;
+      if (!filter) {
+        cell.innerHTML = original;
+      } else {
+        const regex = new RegExp(`(${filter})`, "gi");
+        cell.innerHTML = original.replace(regex, "<mark>$1</mark>");
+      }
+    });
   });
 
-  if (foundIdMatch && filter) {
-    loadEmployees(foundIdMatch);
+  if (found) {
+    loadLogs(matchedId);
   } else {
     document.getElementById("logsHeader").style.display = "none";
     document.getElementById("logsContainer").style.display = "none";
   }
 });
 
-//clear button logic
-document.getElementById("clearSearchBtn").addEventListener("click", () => {
-  document.getElementById("searchBox").value = "";
+document.querySelector('button[onclick="clearSearch()"]').addEventListener("click", function () {
+  document.getElementById("searchInput").value = "";
   const rows = document.querySelectorAll("#employeeTable tbody tr");
+
   rows.forEach(row => {
-    for (let i = 0; i < 2; i++) {
-      row.children[i].innerHTML = row.children[i].textContent; // remove <mark>
-    }
     row.style.display = "";
+    Array.from(row.children).forEach(cell => {
+      cell.innerHTML = cell.textContent; // Remove highlights
+    });
   });
-  loadEmployees(); // reload everything
+
+  document.getElementById("logsHeader").style.display = "none";
+  document.getElementById("logsContainer").style.display = "none";
+
+  // Optionally reload logs or just reset view
+  loadEmployees(); // Only needed if you dynamically load the table
 });
 
 

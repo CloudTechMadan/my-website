@@ -125,9 +125,11 @@ async function loadEmployees() {
         <td>${emp.Name}</td>
         <td>${emp.FaceId || '—'}</td>
         <td>${emp.CreatedAt || '—'}</td>
+        <td><button class="editBtn" data-id="${emp.EmployeeID}" data-name="${emp.Name}">✏️ Edit</button></td>
       `;
       tableBody.appendChild(row);
     });
+    attachEditButtons();
   } catch (err) {
     console.error("Load employees error:", err);
     status.textContent = "❌ Unable to fetch employees.";
@@ -135,3 +137,38 @@ async function loadEmployees() {
 }
 
 loadEmployees(); // Load on page load
+
+function attachEditButtons() {
+  const buttons = document.querySelectorAll(".editBtn");
+  buttons.forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const empId = btn.dataset.id;
+      const currentName = btn.dataset.name;
+      const newName = prompt(`Enter new name for Employee ID ${empId}:`, currentName);
+      if (!newName || newName.trim() === "") return;
+
+      try {
+        const res = await fetch("https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/getEmployeeDetailsAdmin", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`
+          },
+          body: JSON.stringify({ employeeId: empId, name: newName.trim() })
+        });
+
+        const result = await res.json();
+        if (res.ok) {
+          alert("✅ Name updated successfully.");
+          loadEmployees(); // reload
+        } else {
+          alert(`❌ Error: ${result.error || "Update failed"}`);
+        }
+      } catch (err) {
+        alert("❌ Network error.");
+        console.error(err);
+      }
+    });
+  });
+}
+

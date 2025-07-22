@@ -13,32 +13,40 @@
     <h1>Add New Employee</h1>
     <p class="description">Submit employee name, ID, and face image</p>
 
-    <form id="addUserForm">
-      <input type="text" id="employeeId" placeholder="Employee ID" required /><br><br>
-      <input type="text" id="fullName" placeholder="Full Name" required /><br><br>
-      <input type="file" id="faceImage" accept="image/*" required /><br><br>
+    <form id="addUserForm" class="form">
+      <input type="text" id="employeeId" placeholder="Employee ID" required />
+      <input type="text" id="fullName" placeholder="Full Name" required />
+      <input type="file" id="faceImage" accept="image/*" required />
       <button type="submit">Add User</button>
     </form>
-    <hr>
-    <input type="text" id="searchBox" placeholder="🔍 Search by ID or Name" style="width: 100%; padding: 8px; margin: 10px 0;" />
-    <h2>👥 Registered Employees</h2>
-    <table id="employeeTable" border="1" style="width: 100%; border-collapse: collapse;">
-      <thead>
-        <tr>
-          <th>Employee ID</th>
-          <th>Name</th>
-          <th>Face ID</th>
-          <th>Created At</th>
-          <th>Edit</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
 
-    <button id="logoutBtn">🚪 Logout</button>
-
-    <div id="userInfo"></div>
     <div id="adminStatus"></div>
+
+    <hr>
+
+    <input type="text" id="searchBox" placeholder="🔍 Search by ID or Name" />
+
+    <h2>👥 Registered Employees</h2>
+
+    <div class="table-wrapper">
+      <table id="employeeTable" border="1">
+        <thead>
+          <tr>
+            <th>Employee ID</th>
+            <th>Name</th>
+            <th>Face ID</th>
+            <th>Created At</th>
+            <th>Edit</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="footer">
+      <div id="userInfo"></div>
+      <button id="logoutBtn">🚪 Logout</button>
+    </div>
   </div>
 
   <script src="admin.js"></script>

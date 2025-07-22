@@ -233,9 +233,7 @@ searchInput.addEventListener("input", async () => {
 
 //...
 function resetTableAndLogs() {
-  const rows = document.querySelectorAll("#employeeTable tbody tr");
-  rows.forEach(row => row.style.display = "");
-
+  loadEmployees();  // Reload all rows from backend
   document.getElementById("logsHeader").style.display = "none";
   document.getElementById("logsContainer").style.display = "none";
 }

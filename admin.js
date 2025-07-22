@@ -97,3 +97,41 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
   window.location.href =
     "https://face-attendance-admin-auth.auth.us-east-1.amazoncognito.com/logout?client_id=64pn554o9iae8at36o356j1ba1&logout_uri=https://cloudtechmadan.github.io/my-website/index.html";
 });
+async function loadEmployees() {
+  const status = document.getElementById("adminStatus");
+
+  try {
+    const response = await fetch("https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/getEmployeeDetailsAdmin", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`
+      }
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      status.textContent = `❌ Failed to load employees: ${data.error}`;
+      return;
+    }
+
+    const tableBody = document.querySelector("#employeeTable tbody");
+    tableBody.innerHTML = ""; // Clear previous
+
+    data.employees.forEach(emp => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${emp.EmployeeID}</td>
+        <td>${emp.Name}</td>
+        <td>${emp.FaceId || '—'}</td>
+        <td>${emp.CreatedAt || '—'}</td>
+      `;
+      tableBody.appendChild(row);
+    });
+  } catch (err) {
+    console.error("Load employees error:", err);
+    status.textContent = "❌ Unable to fetch employees.";
+  }
+}
+
+loadEmployees(); // Load on page load

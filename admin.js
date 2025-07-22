@@ -298,6 +298,34 @@ function attachEditButtons() {
   });
 }
 
+//...
+async function loadAttendanceStats() {
+  try {
+    const res = await fetch("https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/getAttendanceStats", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`
+      }
+    });
+    const stats = await res.json();
+    const list = document.getElementById("topAttendanceStats");
+    list.innerHTML = "";
+
+    // Sort descending by count
+    stats.sort((a, b) => b.count - a.count);
+
+    stats.slice(0, 5).forEach(item => {
+      const li = document.createElement("li");
+      li.textContent = `${item.employeeId} — ${item.count} check-ins`;
+      list.appendChild(li);
+    });
+  } catch (err) {
+    console.error("Stats error:", err);
+  }
+}
+loadAttendanceStats();
+//...
+
 function attachDeleteButtons() {
   const deleteButtons = document.querySelectorAll('.delete-btn');
 

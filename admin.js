@@ -200,7 +200,7 @@ function attachDeleteButtons() {
       }
 
       try {
-        const token = sessionStorage.getItem("accessToken"); // Or wherever you're storing it
+        const token = localStorage.getItem("access_token"); // Or wherever you're storing it
 
         const response = await fetch('https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/deleteEmployeeAdmin', {
           method: 'POST',

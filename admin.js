@@ -177,28 +177,52 @@ async function loadEmployees(filterId = null) {
 
 loadEmployees(); // Load on page load
 
+//search logic
 document.getElementById("searchBox").addEventListener("input", function () {
-  const filter = this.value.toLowerCase();
+  const filter = this.value.trim().toLowerCase();
   const rows = document.querySelectorAll("#employeeTable tbody tr");
-  let foundMatch = false;
-  let matchedId = "";
+
+  let foundIdMatch = null;
 
   rows.forEach(row => {
-    const text = row.textContent.toLowerCase();
-    const isMatch = text.includes(filter);
+    const idCell = row.children[0].textContent.toLowerCase();
+    const nameCell = row.children[1].textContent.toLowerCase();
+    const isMatch = idCell.includes(filter) || nameCell.includes(filter);
+
+    // Highlight matched name/ID (case-insensitive)
+    for (let i = 0; i < 2; i++) {
+      const cell = row.children[i];
+      const original = cell.textContent;
+      const regex = new RegExp(`(${filter})`, "ig");
+      cell.innerHTML = original.replace(regex, "<mark>$1</mark>");
+    }
+
     row.style.display = isMatch ? "" : "none";
-    if (isMatch && !foundMatch) {
-      matchedId = row.children[0].textContent; // First column is Employee ID
-      foundMatch = true;
+
+    if (isMatch && !foundIdMatch) {
+      foundIdMatch = idCell; // store EmployeeID for logs
     }
   });
 
-  if (foundMatch) {
-    loadEmployees(matchedId); // reload with logs
+  if (foundIdMatch && filter) {
+    loadEmployees(foundIdMatch);
   } else {
     document.getElementById("logsHeader").style.display = "none";
     document.getElementById("logsContainer").style.display = "none";
   }
+});
+
+//clear button logic
+document.getElementById("clearSearchBtn").addEventListener("click", () => {
+  document.getElementById("searchBox").value = "";
+  const rows = document.querySelectorAll("#employeeTable tbody tr");
+  rows.forEach(row => {
+    for (let i = 0; i < 2; i++) {
+      row.children[i].innerHTML = row.children[i].textContent; // remove <mark>
+    }
+    row.style.display = "";
+  });
+  loadEmployees(); // reload everything
 });
 
 

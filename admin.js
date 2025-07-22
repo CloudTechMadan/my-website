@@ -211,11 +211,11 @@ searchInput.addEventListener("input", () => {
       li.style.cursor = "pointer";
       li.style.borderBottom = "1px solid #eee";
 
-      li.addEventListener("click", () => {
+      li.addEventListener("click", async () => {
         searchInput.value = match.name;
         suggestionsBox.style.display = "none";
-        filterEmployeeTableById(match.id);
-        loadEmployees(match.id);  // fetch logs
+        await loadEmployees(match.id);  // Wait for fresh data
+        filterEmployeeTableById(match.id);  // Then filter table
       });
 
       suggestionsBox.appendChild(li);

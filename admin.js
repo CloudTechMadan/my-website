@@ -178,45 +178,79 @@ async function loadEmployees(filterId = null) {
 loadEmployees(); // Load on page load
 
 // Enhanced Search and Clear Logic
-document.querySelector('button[onclick="searchEmployee()"]').addEventListener("click", function () {
-  const filter = document.getElementById("searchInput").value.toLowerCase().trim();
-  const rows = document.querySelectorAll("#employeeTable tbody tr");
+const searchInput = document.getElementById("searchInput");
+const suggestionsBox = document.getElementById("searchSuggestions");
 
-  let found = false;
-  let matchedId = "";
+// Real-time input listener
+searchInput.addEventListener("input", () => {
+  const query = searchInput.value.trim().toLowerCase();
+  if (!query) {
+    suggestionsBox.style.display = "none";
+    resetTableAndLogs();
+    return;
+  }
+
+  const rows = document.querySelectorAll("#employeeTable tbody tr");
+  suggestionsBox.innerHTML = "";
+  let matches = [];
 
   rows.forEach(row => {
-    const employeeId = row.children[0].textContent.toLowerCase();
+    const empId = row.children[0].textContent.toLowerCase();
     const name = row.children[1].textContent.toLowerCase();
-    const isMatch = employeeId.includes(filter) || name.includes(filter);
-
-    if (isMatch && !found) {
-      matchedId = row.children[0].textContent;
-      found = true;
+    if (empId.includes(query) || name.includes(query)) {
+      matches.push({ id: empId, name: row.children[1].textContent });
     }
-
-    row.style.display = isMatch ? "" : "none";
-
-    // Highlight matched text
-    Array.from(row.children).forEach(cell => {
-      const original = cell.textContent;
-      if (!filter) {
-        cell.innerHTML = original;
-      } else {
-        const regex = new RegExp(`(${filter})`, "gi");
-        cell.innerHTML = original.replace(regex, "<mark>$1</mark>");
-      }
-    });
   });
 
-  if (found) {
-  loadEmployees(matchedId); // ✅ Will fetch both employee and logs data
-} else {
+  if (matches.length > 0) {
+    suggestionsBox.style.display = "block";
+    matches.forEach(match => {
+      const li = document.createElement("li");
+      li.textContent = `${match.name} (${match.id})`;
+      li.style.padding = "6px";
+      li.style.cursor = "pointer";
+      li.style.borderBottom = "1px solid #eee";
+
+      li.addEventListener("click", () => {
+        searchInput.value = match.name;
+        suggestionsBox.style.display = "none";
+        filterEmployeeTableById(match.id);
+        loadEmployees(match.id);  // fetch logs
+      });
+
+      suggestionsBox.appendChild(li);
+    });
+  } else {
+    suggestionsBox.style.display = "none";
+  }
+});
+
+function filterEmployeeTableById(empId) {
+  const rows = document.querySelectorAll("#employeeTable tbody tr");
+  rows.forEach(row => {
+    if (row.children[0].textContent === empId) {
+      row.style.display = "";
+    } else {
+      row.style.display = "none";
+    }
+  });
+}
+
+function resetTableAndLogs() {
+  const rows = document.querySelectorAll("#employeeTable tbody tr");
+  rows.forEach(row => row.style.display = "");
+
   document.getElementById("logsHeader").style.display = "none";
   document.getElementById("logsContainer").style.display = "none";
 }
-});
 
+// Optional: clear button logic
+function clearSearch() {
+  searchInput.value = "";
+  suggestionsBox.style.display = "none";
+  resetTableAndLogs();
+}
+//clear button logic
 document.querySelector('button[onclick="clearSearch()"]').addEventListener("click", function () {
   document.getElementById("searchInput").value = "";
   const rows = document.querySelectorAll("#employeeTable tbody tr");

@@ -130,6 +130,7 @@ async function loadEmployees() {
       tableBody.appendChild(row);
     });
     attachEditButtons();
+    attachDeleteButtons();
   } catch (err) {
     console.error("Load employees error:", err);
     status.textContent = "❌ Unable to fetch employees.";

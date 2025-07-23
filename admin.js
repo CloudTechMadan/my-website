@@ -268,32 +268,30 @@ searchInput.addEventListener("input", async () => {
       li.style.cursor = "pointer";
       li.style.borderBottom = "1px solid #eee";
 
+      //.. working onit
       li.addEventListener("click", async () => {
-  const employeeId = match.EmployeeID;
-  searchInput.value = match.Name;
-  suggestionsBox.style.display = "none";
-
-  try {
-    const res = await fetch(`https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/getEmployeeDetailsAdmin?employeeId=${employeeId}`, {
-      method: 'GET',
-      headers: {
-        "Content-Type": "application/json",
-        'Authorization': `Bearer ${accessToken}`
-      }
-    });
-
-    const data = await res.json();
-    const { employees, logs } = data;
-
-    displayEmployeeAnalytics(employeeId, employees, logs);
-    document.getElementById("employeeAnalyticsPanel").style.display = "block";
-
-  } catch (err) {
-    console.error("Analytics fetch failed:", err);
-    showToast("❌ Failed to load employee analytics");
-  }
-});
-
+        const employeeId = match.EmployeeID;
+        searchInput.value = match.Name;
+        suggestionsBox.style.display = "none";
+        try {
+          const res = await fetch(`https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/getEmployeeDetailsAdmin?employeeId=${employeeId}`, {
+            method: 'GET',
+            headers: {
+              "Content-Type": "application/json",
+              'Authorization': `Bearer ${accessToken}`
+            }
+          });
+          const data = await res.json();
+          const { employees, logs } = data;
+          // 🔥 Add this line to properly filter table + logs
+          await loadEmployees(employeeId);
+          displayEmployeeAnalytics(employeeId, employees, logs);
+          document.getElementById("employeeAnalyticsPanel").style.display = "block";
+        } catch (err) {
+          console.error("Analytics fetch failed:", err);
+          showToast("❌ Failed to load employee analytics");
+        }
+      });
       suggestionsBox.appendChild(li);
     });
   } else {

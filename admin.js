@@ -105,8 +105,12 @@ async function loadEmployees(filterId = null) {
   const logsHeader = document.getElementById("logsHeader");
   const logsTableBody = document.querySelector("#logsTable tbody");
 
+  const statsPanel = document.getElementById("employeeAnalyticsPanel");
+  const statsDiv = document.getElementById("employeeStats");
+  const heatmapDiv = document.getElementById("heatmapContainer");
+  const adminDiv = document.getElementById("adminLeaderboard");
+
   try {
-    // If filterId is passed, request with query param to also get logs
     const url = filterId
       ? `https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/getEmployeeDetailsAdmin?employeeId=${encodeURIComponent(filterId)}`
       : `https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/getEmployeeDetailsAdmin`;
@@ -146,7 +150,7 @@ async function loadEmployees(filterId = null) {
     attachEditButtons();
     attachDeleteButtons();
 
-    // 📜 If logs are returned, show them
+    // 📜 Render logs (if any)
     if (data.logs && data.logs.length > 0) {
       logsHeader.style.display = "block";
       logsContainer.style.display = "block";
@@ -166,6 +170,54 @@ async function loadEmployees(filterId = null) {
       logsHeader.style.display = "none";
       logsContainer.style.display = "none";
       logsTableBody.innerHTML = "";
+    }
+
+    // 📊 Analytics Section
+    if (data.attendanceStats) {
+      statsPanel.style.display = "block";
+      const stats = data.attendanceStats;
+
+      if (filterId) {
+        const stat = stats.find(s => s.employeeId === filterId);
+        statsDiv.innerHTML = stat
+          ? `🔢 Total check-ins for <b>${filterId}</b>: <strong>${stat.count}</strong>`
+          : "No check-in data.";
+        heatmapDiv.innerHTML = "";
+        adminDiv.innerHTML = "";
+      } else {
+        statsDiv.innerHTML = `
+          <h4>🏆 Top Employees by Check-ins</h4>
+          <ol>${stats.slice(0, 5).map(s => `<li>${s.employeeId} — ${s.count}</li>`).join("")}</ol>
+        `;
+
+        // 🧑‍💻 Admin leaderboard
+        if (data.adminRanking && data.adminRanking.length) {
+          adminDiv.innerHTML = `
+            <h4>🧑‍💻 Admin Activity Leaderboard</h4>
+            <ol>${data.adminRanking.slice(0, 5).map(([admin, count]) => `<li>${admin}: ${count} actions</li>`).join("")}</ol>
+          `;
+        }
+
+        // 📅 Basic heatmap rendering
+        if (data.heatmap && Object.keys(data.heatmap).length) {
+          heatmapDiv.innerHTML = `
+            <h4>📅 Daily Check-ins (Heatmap-style)</h4>
+            <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+              ${Object.entries(data.heatmap).map(([date, count]) => `
+                <div title="${date}: ${count}" style="
+                  width: 20px; height: 20px;
+                  background-color: rgba(0, 128, 0, ${Math.min(1, count / 10)});
+                  border: 1px solid #ccc;
+                "></div>
+              `).join("")}
+            </div>
+          `;
+        } else {
+          heatmapDiv.innerHTML = "";
+        }
+      }
+    } else {
+      statsPanel.style.display = "none";
     }
 
   } catch (err) {

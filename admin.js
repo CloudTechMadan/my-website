@@ -371,4 +371,45 @@ function attachDeleteButtons() {
   });
 }
 
+//adding logging get logs
+document.getElementById("showAnalyticsBtn").addEventListener("click", async () => {
+  const panel = document.getElementById("analyticsPanel");
+  const content = document.getElementById("analyticsContent");
+  panel.style.display = "block";
+  content.innerHTML = "⏳ Loading...";
+
+  try {
+    const token = localStorage.getItem("token"); // or however you store it
+    const response = await fetch("https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/prod/getAdminLogs", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`
+      },
+    });
+
+    if (!response.ok) throw new Error("Failed to fetch logs");
+    const data = await response.json();
+
+    if (!data.logs || data.logs.length === 0) {
+      content.innerHTML = "No logs found.";
+    } else {
+      content.innerHTML = `
+        <ul style="padding-left: 20px;">
+          ${data.logs.map(log => `
+            <li>
+              🕒 <b>${log.Timestamp}</b><br>
+              👤 <b>${log.AdminID}</b> performed <b>${log.ActionType}</b> on <b>${log.TargetEmployeeID}</b><br>
+              📝 ${log.Details}
+            </li>
+          `).join("")}
+        </ul>
+      `;
+    }
+  } catch (err) {
+    console.error(err);
+    content.innerHTML = `❌ Error: ${err.message}`;
+  }
+});
+
+
 

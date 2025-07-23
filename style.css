@@ -209,3 +209,20 @@ td button {
     width: 100%;
   }
 }
+
+#logsContainer {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+#logsTable th {
+  background-color: #fcefcf;
+  color: #444;
+}
+
+#logsTable td {
+  background-color: #fffdf6;
+}

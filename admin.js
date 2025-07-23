@@ -269,28 +269,30 @@ searchInput.addEventListener("input", async () => {
       li.style.borderBottom = "1px solid #eee";
 
       li.addEventListener("click", async () => {
-        searchInput.value = match.Name;
-        suggestionsBox.style.display = "none";
+  const employeeId = match.EmployeeID;
+  searchInput.value = match.Name;
+  suggestionsBox.style.display = "none";
 
-        // ✅ New fetch to get analytics for selected employee
-        try {
-          const analyticsResponse = await fetch(`https://your-api-url/employeeAnalytics?employeeId=${match.EmployeeID}`, {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${accessToken}`
-            }
-          });
+  try {
+    const res = await fetch(`https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/getEmployeeDetailsAdmin?employeeId=${employeeId}`, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${accessToken}`
+      }
+    });
 
-          const analyticsData = await analyticsResponse.json();
-          const { employees, logs } = analyticsData;
+    const data = await res.json();
+    const { employees, logs } = data;
 
-          // ✅ Call your function to show analytics
-          displayEmployeeAnalytics(match.EmployeeID, employees, logs);
-        } catch (analyticsErr) {
-          console.error("Analytics fetch error:", analyticsErr);
-          showToast("❌ Failed to load employee analytics");
-        }
-      });
+    displayEmployeeAnalytics(employeeId, employees, logs);
+    document.getElementById("employeeAnalyticsPanel").style.display = "block";
+
+  } catch (err) {
+    console.error("Analytics fetch failed:", err);
+    showToast("❌ Failed to load employee analytics");
+  }
+});
 
       suggestionsBox.appendChild(li);
     });

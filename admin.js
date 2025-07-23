@@ -518,3 +518,9 @@ function displayEmployeeAnalytics(employeeId, employees, logs) {
     leaderboardContainer.innerHTML = "<p>🏆 Admin leaderboard / active employees here.</p>";
   }
 }
+
+document.getElementById("toggleLogsBtn").addEventListener("click", () => {
+  const logsContainer = document.getElementById("logsContainer");
+  logsContainer.style.display = logsContainer.style.display === "none" ? "block" : "none";
+});
+

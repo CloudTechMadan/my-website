@@ -517,6 +517,3 @@ function displayEmployeeAnalytics(employeeId, employees, logs) {
     leaderboardContainer.innerHTML = "<p>🏆 Admin leaderboard / active employees here.</p>";
   }
 }
-
-
-

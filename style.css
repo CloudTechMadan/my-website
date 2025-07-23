@@ -226,3 +226,28 @@ td button {
 #logsTable td {
   background-color: #fffdf6;
 }
+
+#employeeTable {
+  background-color: #fcfcfc;
+}
+
+.table-wrapper#employeeTableWrapper {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+#employeeTable thead th {
+  position: sticky;
+  top: 0;
+  background-color: #eaf3fc;
+  z-index: 1;
+}
+#logsTable thead th {
+  position: sticky;
+  top: 0;
+  background-color: #eaf3fc;
+  z-index: 1;
+}

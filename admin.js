@@ -243,45 +243,64 @@ searchInput.addEventListener("input", async () => {
   }
 
   try {
-    const response = await fetch("https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/getEmployeeDetailsAdmin", {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`
-      }
-    });
-    const data = await response.json();
-
-    const matches = data.employees.filter(emp => {
-      return emp.EmployeeID.toLowerCase().includes(query) ||
-             emp.Name.toLowerCase().includes(query);
-    });
-
-    suggestionsBox.innerHTML = "";
-
-    if (matches.length > 0) {
-      suggestionsBox.style.display = "block";
-      matches.forEach(match => {
-        const li = document.createElement("li");
-        li.textContent = `${match.Name} (${match.EmployeeID})`;
-        li.style.padding = "6px";
-        li.style.cursor = "pointer";
-        li.style.borderBottom = "1px solid #eee";
-
-        li.addEventListener("click", async () => {
-          searchInput.value = match.Name;
-          suggestionsBox.style.display = "none";
-          await loadEmployees(match.EmployeeID); // ✅ Only this line needed
-        });
-
-        suggestionsBox.appendChild(li);
-      });
-    } else {
-      suggestionsBox.style.display = "none";
+  const response = await fetch("https://jprbceq0dk.execute-api.us-east-1.amazonaws.com/getEmployeeDetailsAdmin", {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`
     }
-  } catch (err) {
-    console.error("Suggestion error:", err);
+  });
+
+  const data = await response.json();
+
+  const matches = data.employees.filter(emp => {
+    return emp.EmployeeID.toLowerCase().includes(query) ||
+           emp.Name.toLowerCase().includes(query);
+  });
+
+  suggestionsBox.innerHTML = "";
+
+  if (matches.length > 0) {
+    suggestionsBox.style.display = "block";
+    matches.forEach(match => {
+      const li = document.createElement("li");
+      li.textContent = `${match.Name} (${match.EmployeeID})`;
+      li.style.padding = "6px";
+      li.style.cursor = "pointer";
+      li.style.borderBottom = "1px solid #eee";
+
+      li.addEventListener("click", async () => {
+        searchInput.value = match.Name;
+        suggestionsBox.style.display = "none";
+
+        // ✅ New fetch to get analytics for selected employee
+        try {
+          const analyticsResponse = await fetch(`https://your-api-url/employeeAnalytics?employeeId=${match.EmployeeID}`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${accessToken}`
+            }
+          });
+
+          const analyticsData = await analyticsResponse.json();
+          const { employees, logs } = analyticsData;
+
+          // ✅ Call your function to show analytics
+          displayEmployeeAnalytics(match.EmployeeID, employees, logs);
+        } catch (analyticsErr) {
+          console.error("Analytics fetch error:", analyticsErr);
+          showToast("❌ Failed to load employee analytics");
+        }
+      });
+
+      suggestionsBox.appendChild(li);
+    });
+  } else {
+    suggestionsBox.style.display = "none";
   }
-});
+} catch (err) {
+  console.error("Suggestion error:", err);
+}
+
 
 //...
 function resetTableAndLogs() {
@@ -462,6 +481,42 @@ document.getElementById("showAnalyticsBtn").addEventListener("click", async () =
     content.innerHTML = `❌ Error: ${err.message}`;
   }
 });
+
+function displayEmployeeAnalytics(employeeId, employees, logs) {
+  const analyticsPanel = document.getElementById("employeeAnalyticsPanel");
+  const statsContainer = document.getElementById("employeeStats");
+  const heatmapContainer = document.getElementById("heatmapContainer");
+  const leaderboardContainer = document.getElementById("adminLeaderboard");
+
+  analyticsPanel.style.display = "block";
+  statsContainer.innerHTML = "";
+  heatmapContainer.innerHTML = "";
+  leaderboardContainer.innerHTML = "";
+
+  if (employeeId && employees.length && logs.length) {
+    const user = employees[0];
+    const totalDays = logs.length;
+
+    const locationSet = new Set(logs.map(log => log.Address).filter(Boolean));
+    const lastMarked = logs[logs.length - 1]?.TimestampIST || "N/A";
+
+    statsContainer.innerHTML = `
+      <p><b>Employee:</b> ${user.Name} (${user.EmployeeID})</p>
+      <p><b>Total Attendances:</b> ${totalDays}</p>
+      <p><b>Unique Locations:</b> ${locationSet.size}</p>
+      <p><b>Last Attendance:</b> ${lastMarked}</p>
+    `;
+
+    // TODO: Plot per-day heatmap, e.g., bar chart from logs
+    heatmapContainer.innerHTML = "<p>📅 Per-day attendance heatmap will go here.</p>";
+  } else {
+    statsContainer.innerHTML = `<p>No employee selected. Showing overall analytics.</p>`;
+    
+    // TODO: Generate global stats from previously scanned data
+    heatmapContainer.innerHTML = "<p>🌍 Global heatmap / attendance distribution here.</p>";
+    leaderboardContainer.innerHTML = "<p>🏆 Admin leaderboard / active employees here.</p>";
+  }
+}
 
 
 

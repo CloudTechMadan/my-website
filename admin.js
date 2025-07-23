@@ -297,9 +297,10 @@ searchInput.addEventListener("input", async () => {
   } else {
     suggestionsBox.style.display = "none";
   }
-} catch (err) {
-  console.error("Suggestion error:", err);
-}
+  } catch (err) {
+    console.error("Suggestion error:", err);
+  }
+});
 
 
 //...

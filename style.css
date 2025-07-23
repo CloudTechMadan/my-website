@@ -1,35 +1,39 @@
-body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f4f8fc;
+/* Reset */
+* {
   margin: 0;
   padding: 0;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  min-height: 100vh;
-  padding-top: 40px;
-}
-
-.container {
-  background-color: #fff;
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 800px;
   box-sizing: border-box;
 }
 
-h1 {
-  color: #2e7dd1;
-  margin-bottom: 5px;
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to bottom right, #e4f1ff, #ffffff);
+  min-height: 100vh;
+  padding-top: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.container {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 30px 40px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  max-width: 900px;
+  width: 95%;
+}
+
+h1, h2, h3, h4 {
+  color: #2b5797;
+  margin-bottom: 10px;
   text-align: center;
 }
 
 .description {
-  font-size: 14px;
+  font-size: 15px;
   color: #555;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   text-align: center;
 }
 
@@ -38,88 +42,170 @@ h1 {
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 input[type="text"],
 input[type="file"],
-#searchBox {
+#searchInput {
   width: 100%;
   max-width: 400px;
-  padding: 10px;
+  padding: 12px;
   border: 1px solid #ccc;
-  border-radius: 6px;
-  box-sizing: border-box;
+  border-radius: 8px;
+  transition: border-color 0.3s;
+  font-size: 15px;
 }
 
-#searchBox {
-  margin: 15px 0;
+input[type="text"]:focus,
+input[type="file"]:focus,
+#searchInput:focus {
+  border-color: #2e7dd1;
+  outline: none;
 }
 
 button {
   background-color: #2e7dd1;
-  color: white;
+  color: #fff;
   border: none;
   padding: 12px 20px;
-  font-size: 16px;
-  border-radius: 6px;
+  font-size: 15px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.2s;
 }
 
 button:hover {
   background-color: #1b5fa0;
+  transform: scale(1.02);
 }
 
 #adminStatus {
   margin-top: 10px;
-  font-size: 14px;
+  font-size: 15px;
   color: #d9534f;
   text-align: center;
 }
 
 .table-wrapper {
   overflow-x: auto;
+  margin-top: 15px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
   font-size: 14px;
+  background-color: #fdfdfd;
 }
 
 th,
 td {
-  border: 1px solid #ccc;
-  padding: 8px 10px;
+  border: 1px solid #ddd;
+  padding: 10px 12px;
   text-align: center;
 }
 
 th {
-  background-color: #e6f0fa;
+  background-color: #eaf3fc;
+  font-weight: 600;
 }
 
 td button {
+  padding: 6px 12px;
   font-size: 14px;
-  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.editBtn {
+  background-color: #ffb703;
+  color: #000;
+}
+
+.editBtn:hover {
+  background-color: #e6a400;
+}
+
+.delete-btn {
+  background-color: #d9534f;
+  color: #fff;
+}
+
+.delete-btn:hover {
+  background-color: #b92c28;
+}
+
+#searchSuggestions {
+  border: 1px solid #ccc;
+  background-color: #fff;
+  max-height: 180px;
+  overflow-y: auto;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  position: absolute;
+  z-index: 1000;
+}
+
+#topAttendanceStats {
+  padding-left: 20px;
+  margin-top: 15px;
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+#employeeStats p,
+#analyticsContent li {
+  margin-bottom: 6px;
+}
+
+#employeeStats {
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+#heatmapContainer div[title] {
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+#analyticsPanel {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+#analyticsContent ul {
+  list-style-type: disc;
+  margin-top: 10px;
 }
 
 .footer {
-  margin-top: 25px;
+  margin-top: 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
+  gap: 10px;
+  font-size: 14px;
 }
 
 #userInfo {
-  font-size: 14px;
-  color: green;
-}
-#topAttendanceStats {
-  padding-left: 20px;
-  margin-top: 10px;
-  line-height: 1.6;
+  color: #2b862b;
+  font-weight: 500;
 }
 
+/* Responsive Layout */
+@media (max-width: 600px) {
+  .form, .footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  button {
+    width: 100%;
+  }
+}
